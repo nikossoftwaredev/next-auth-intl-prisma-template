@@ -54,6 +54,14 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - Use `@/` path alias for imports
 - Utility function `cn()` in `@/lib/general/utils.ts` for merging Tailwind classes
 
+#### UI & Design Rules
+- **Always use the frontend-design plugin** when working on any design or UI task
+- **Always use shadcn/ui components** — search the web for the correct install command (`npx shadcn@latest add <component>`) and usage patterns before implementing. Do not guess component APIs; look them up.
+- **Always use Lucide icons** (`lucide-react`) — they are the icon set used by shadcn/ui. Search for the right icon name on the web when needed.
+- **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
+- Use `CircleIcon` (`components/CircleIcon.tsx`) for general icon display with colored circular backgrounds
+- Use `SocialIcon` (`components/social-icon.tsx`) for social media link icons with platform-specific colors
+
 #### Styling
 - CSS variables defined in `app/globals.css`
 - Dark mode via `next-themes` with class strategy
