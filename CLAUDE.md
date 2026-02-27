@@ -60,129 +60,6 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - Custom Tailwind variant: `@custom-variant dark (&:is(.dark *))`
 - Always use semantic color naming (e.g., `text-foreground`, `bg-background`)
 
-## Development Guidelines
-
-### Package Manager
-- **Always use pnpm** - Never use npm or yarn
-
-### Code Style
-- **ALWAYS use arrow functions** - Never use function declarations or function expressions
-  - Use `const functionName = () => {}` for all functions
-  - Use `const functionName = async () => {}` for async functions
-  - Use arrow functions for all callbacks, event handlers, and utility functions
-- **If/Else Statement Formatting**:
-  - **Single-line if statements** - Remove braces for single-line conditions
-  - **If-else consistency** - Match the formatting between if and else:
-    - If both are single-line: No braces for either
-    - If one is multi-line: Use braces for both
-  - Examples:
-    ```typescript
-    // ✅ GOOD - Both single-line, no braces
-    if (condition) doSomething();
-    else doSomethingElse();
-
-    // ✅ GOOD - One is multi-line, both use braces
-    if (condition) {
-      doSomething();
-      doMore();
-    } else {
-      doSomethingElse();
-    }
-
-    // ❌ BAD - Inconsistent formatting
-    if (condition) doSomething();
-    else {
-      doSomethingElse();
-      doMore();
-    }
-    ```
-- **Object parameters** - Use for functions with more than 2 parameters
-- **Static objects** - Define outside components to prevent recreation
-
-### Component Architecture
-
-#### Server/Client Separation
-- Keep `page.tsx` and `layout.tsx` as server components
-- Create separate client components when needed
-- Never add "use client" to server components
-
-#### Component Structure Order
-1. State declarations
-2. Callbacks
-3. **ALL useEffects** (immediately before return statement)
-4. Return statement
-
-#### Interface Location
-- Component interfaces immediately before component definition
-- Shared interfaces in `/types` folder
-
-### React Best Practices
-
-#### useEffect Guidelines
-- **Minimal dependencies** - Only include what's actually used AND should trigger re-runs
-- **Avoid circular dependencies** - Never include state that the effect updates
-- **Prefer derived state** - Compute values directly instead of useEffect when possible
-- **Memory leak prevention** - Use isMountedRef pattern for async operations
-- **Always clean up** - Return cleanup function for subscriptions, timers, listeners
-
-#### Performance Optimization
-- **ALWAYS use useCallback/useMemo** when passing to child components
-- **Don't over-optimize** - Only memoize when necessary
-- **Prefer derived state over useEffect** for computed values
-
-### UI Component Usage
-
-#### Button Component
-- **ALWAYS use shadcn/ui Button** with ONLY variants and sizes
-- **NEVER add styling classes** that duplicate variant styles
-- Available variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `primary`, `gradient`, `link`
-- Available sizes: `sm`, `default`, `lg`, `xl`, `icon`
-
-**Only add className for:**
-- Layout positioning (`w-full`, `flex-1`, `justify-start`)
-- Conditional states (`isOpen && "border-primary"`)
-
-#### Typography Components
-When implementing designs, ALWAYS use typography components from `@/components/ui/typography.tsx`:
-- `TypographyH1` through `TypographyH4` for headings
-- `TypographyRegular`, `TypographyMedium` for body text
-- `TypographySmallReg`, `TypographySmallMedium` for smaller text
-- `TypographyMiniReg`, `TypographyMiniMedium` for tiny text
-- `TypographyMono` for monospace text
-
-### Next.js Patterns
-
-#### Redirect Usage
-- **NEVER place redirect() inside try-catch blocks**
-- redirect() throws internally to trigger navigation
-
-```typescript
-// ✅ GOOD
-const data = await fetchData();
-if (!data) redirect('/error');
-
-// ❌ BAD
-try {
-  if (!data) redirect('/error'); // Gets caught!
-} catch (error) {
-  // Redirect fails
-}
-```
-
-### Error Checking Protocol
-After completing work on any file:
-1. Run `pnpm tsc --noEmit` to check TypeScript errors
-2. Run `pnpm lint` to check ESLint errors (fix errors, not warnings)
-3. Fix ALL errors before moving to next task
-
-### Code Review Mindset
-- Always question if implementation is correct
-- Push back on incorrect requirements
-- Provide constructive feedback
-- Check for latest best practices (current year: 2025)
-- Review implementation holistically
-- Prefer native solutions over reinventing the wheel
-
 ## Authentication Setup
 
 ### NextAuth Configuration
@@ -208,3 +85,66 @@ After completing work on any file:
 - **Locale Validation**: Layout validates locale and returns 404 for invalid locales
 - **Static Generation**: Uses `generateStaticParams()` for all locale variants
 - **Prisma Setup**: Connected to Supabase PostgreSQL database with User and Todo models
+
+## Development Guidelines
+
+All coding rules, style preferences, and best practices are in `tasks/lessons.md`. Review at session start.
+
+## Workflow Orchestration
+
+### 1. Plan Mode Default
+
+* Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+* If something goes sideways, STOP and re-plan immediately - don't keep pushing
+* Use plan mode for verification steps, not just building
+* Write detailed specs upfront to reduce ambiguity
+
+### 2. Subagent Strategy
+
+* Use subagents liberally to keep main context window clean
+* Offload research, exploration, and parallel analysis to subagents
+* For complex problems, throw more compute at it via subagents
+* One task per subagent for focused execution
+
+### 3. Self-Improvement Loop
+
+* After ANY correction from the user: update `tasks/lessons.md` with the pattern
+* Write rules for yourself that prevent the same mistake
+* Ruthlessly iterate on these lessons until mistake rate drops
+* Review lessons at session start for relevant project
+
+### 4. Verification Before Done
+
+* Never mark a task complete without proving it works
+* Diff behavior between main and your changes when relevant
+* Ask yourself: "Would a staff engineer approve this?"
+* Run tests, check logs, demonstrate correctness
+
+### 5. Demand Elegance (Balanced)
+
+* For non-trivial changes: pause and ask "is there a more elegant way?"
+* If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+* Skip this for simple, obvious fixes - don't over-engineer
+* Challenge your own work before presenting it
+
+### 6. Autonomous Bug Fixing
+
+* When given a bug report: just fix it. Don't ask for hand-holding
+* Point at logs, errors, failing tests - then resolve them
+* Zero context switching required from the user
+* Go fix failing CI tests without being told how
+
+## Task Management
+
+1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md`
+6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+
+## Core Principles
+
+* **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+* **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+* **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
