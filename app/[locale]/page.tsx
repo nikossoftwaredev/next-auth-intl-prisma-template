@@ -115,7 +115,7 @@ const Home = async ({ params }: BasePageProps) => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Internationalization support with English, Greek, and Spanish locales.
+                Internationalization support with English and Greek locales.
               </p>
             </CardContent>
           </Card>

@@ -22,11 +22,6 @@ const languages = [
     name: "Ελληνικά",
     flag: "🇬🇷",
   },
-  {
-    code: "es",
-    name: "Español",
-    flag: "🇪🇸",
-  },
 ] as const;
 
 export const LanguageSwitcher = () => {
