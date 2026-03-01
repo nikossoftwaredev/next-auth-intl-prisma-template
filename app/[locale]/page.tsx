@@ -20,9 +20,11 @@ import {
   Languages,
   Sparkles,
   Github,
-  CreditCard
+  CreditCard,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/lib/i18n/navigation";
 
 const Home = async ({ params }: BasePageProps) => {
   const { locale } = await params;
@@ -50,15 +52,15 @@ const Home = async ({ params }: BasePageProps) => {
           <p className="text-muted-foreground text-lg">
             Production-ready template with authentication, database, i18n, and more
           </p>
-          <div className="flex justify-center gap-4">
-            <Button asChild>
+          <div className="flex justify-center gap-4 flex-wrap">
+            <Button variant="outline" asChild>
               <a
                 href="https://github.com/nikossoftwaredev/next-auth-intl-prisma-starter"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="gap-2"
               >
-                <Github className="h-4 w-4" />
+                <Github className="size-4" />
                 View on GitHub
               </a>
             </Button>
@@ -69,7 +71,7 @@ const Home = async ({ params }: BasePageProps) => {
                 rel="noopener noreferrer"
                 className="gap-2"
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="size-4" />
                 Use Template
               </a>
             </Button>
@@ -81,7 +83,7 @@ const Home = async ({ params }: BasePageProps) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
+                <Shield className="size-5" />
                 NextAuth.js
               </CardTitle>
             </CardHeader>
@@ -95,7 +97,7 @@ const Home = async ({ params }: BasePageProps) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Database className="h-5 w-5" />
+                <Database className="size-5" />
                 Prisma + Supabase
               </CardTitle>
             </CardHeader>
@@ -109,7 +111,7 @@ const Home = async ({ params }: BasePageProps) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Languages className="h-5 w-5" />
+                <Languages className="size-5" />
                 next-intl
               </CardTitle>
             </CardHeader>
@@ -123,7 +125,7 @@ const Home = async ({ params }: BasePageProps) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Palette className="h-5 w-5" />
+                <Palette className="size-5" />
                 Theme Switching
               </CardTitle>
             </CardHeader>
@@ -137,7 +139,7 @@ const Home = async ({ params }: BasePageProps) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
+                <Sparkles className="size-5" />
                 shadcn/ui
               </CardTitle>
             </CardHeader>
@@ -148,12 +150,32 @@ const Home = async ({ params }: BasePageProps) => {
             </CardContent>
           </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <LayoutDashboard className="size-5" />
+                Admin Panel
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Full admin dashboard with sidebar navigation, mock data pages for Users, Settings, and Expenses.
+              </p>
+              <Button asChild size="sm">
+                <Link href="/admin" className="gap-2">
+                  <LayoutDashboard className="size-3.5" />
+                  Open Admin
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card className="relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
             <CardHeader className="relative">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
+                  <CreditCard className="size-5" />
                   Stripe Payments
                 </CardTitle>
                 <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">

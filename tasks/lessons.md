@@ -77,6 +77,11 @@ Always use typography components from `@/components/ui/typography.tsx`:
 - `TypographyMiniReg`, `TypographyMiniMedium` for tiny text
 - `TypographyMono` for monospace text
 
+### ScrollArea (shadcn/ui)
+- **ScrollArea requires an explicit/bounded height** to scroll. `flex-1` alone does NOT work because the Radix viewport uses `height: 100%` which needs a definite parent height.
+- **Use `h-0 flex-1` pattern** to make ScrollArea work in flex layouts — `h-0` provides a definite base height (0px), `flex-1` grows it. The viewport's `height: 100%` then resolves correctly.
+- **For admin-style layouts**: constrain the shell to viewport height (`h-svh max-h-svh overflow-hidden`), then use `<ScrollArea className="h-0 flex-1">` for the content area.
+
 ### Color
 - **Semantic color naming** - Use `text-foreground`, `bg-background`, etc. Never use raw color values.
 
