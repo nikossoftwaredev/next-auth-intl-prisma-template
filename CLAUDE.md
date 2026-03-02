@@ -177,3 +177,15 @@ All coding rules, style preferences, and best practices are in `tasks/lessons.md
 - Optional label: `node screenshot.mjs http://localhost:3000 label` → `screenshot-N-label.png`
 - After screenshotting, read the PNG with the Read tool to visually inspect the UI.
 - When comparing against a reference, be specific about differences: spacing, font sizes, colors (hex), alignment, border-radius, shadows.
+
+### Auto-Verification Rule
+
+**After each meaningful UI change (a section, component, or layout adjustment), you MUST:**
+
+1. Run `node screenshot.mjs http://localhost:3000/<relevant-path> <label>` to capture the result
+2. Read the PNG with the Read tool and visually inspect it
+3. Check that the change matches what was requested — look for layout issues, broken styling, misalignment, missing elements
+4. If something looks wrong, fix it and screenshot again — repeat until it looks correct
+5. Only then move on to the next change
+
+**Do NOT batch all changes and screenshot once at the end.** Verify incrementally after each section so issues are caught early and fixed in isolation.
