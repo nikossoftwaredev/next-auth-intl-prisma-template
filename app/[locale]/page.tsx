@@ -23,6 +23,7 @@ import {
   CreditCard,
   LayoutDashboard
 } from "lucide-react";
+import GoogleReviews from "@/components/GoogleReviews";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/i18n/navigation";
 
@@ -191,6 +192,9 @@ const Home = async ({ params }: BasePageProps) => {
           </Card>
 
         </div>
+
+        {/* Google Reviews */}
+        <GoogleReviews placeId={process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID || ""} />
 
         {/* Todo Demo Section */}
         {session?.user ? (
