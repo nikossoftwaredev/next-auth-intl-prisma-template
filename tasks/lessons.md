@@ -94,11 +94,27 @@ Always use typography components from `@/components/ui/typography.tsx`:
 - `TypographyMiniReg`, `TypographyMiniMedium` for tiny text
 - `TypographyMono` for monospace text
 
-### ScrollArea (shadcn/ui)
+### ScrollArea (shadcn/ui) — PREFERRED for all scrollable areas
 
-- **ScrollArea requires an explicit/bounded height** to scroll. `flex-1` alone does NOT work because the Radix viewport uses `height: 100%` which needs a definite parent height.
-- **Use `h-0 flex-1` pattern** to make ScrollArea work in flex layouts — `h-0` provides a definite base height (0px), `flex-1` grows it. The viewport's `height: 100%` then resolves correctly.
+- **Always prefer ScrollArea** over native overflow scrolling. Use it for any scrollable content area.
+- **Radix uses `display: table` internally** on the Viewport, which breaks height calculation in flex containers.
+- **Always add `min-h-0`** to ScrollArea when it's a flex child (e.g., `className="flex-1 min-h-0"`).
+- **Always add `viewportClassName="!overflow-y-scroll"`** to force the viewport to scroll — the `!important` is required to override Radix's inline styles.
+- **Parent flex container must have a fixed/constrained height** (e.g., `h-screen`, `h-[80vh]`) — `h-auto` will NOT work because the container grows with content instead of constraining it.
+- **Never use `h-auto` with `max-h-*`** on a ScrollArea's parent flex container — use a fixed height instead (e.g., `md:h-[80vh]` not `md:h-auto md:max-h-[80vh]`).
+- **Use `h-0 flex-1` pattern** as an alternative — `h-0` provides a definite base height (0px), `flex-1` grows it. The viewport's `height: 100%` then resolves correctly.
 - **For admin-style layouts**: constrain the shell to viewport height (`h-svh max-h-svh overflow-hidden`), then use `<ScrollArea className="h-0 flex-1">` for the content area.
+
+```tsx
+// CORRECT pattern for ScrollArea in flex layouts
+<div className="h-screen flex flex-col">
+  <header>...</header>
+  <ScrollArea className="flex-1 min-h-0" viewportClassName="!overflow-y-scroll">
+    <div className="p-4">{content}</div>
+  </ScrollArea>
+  <footer>...</footer>
+</div>
+```
 
 ### Color
 
