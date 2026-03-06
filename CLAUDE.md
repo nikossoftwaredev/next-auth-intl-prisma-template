@@ -35,21 +35,22 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 
 ### Project Structure
 
-- `app/[locale]/` - Dynamic locale-based routing
+- `app/[locale]/` - Dynamic locale-based routing (page.tsx = landing page, admin/ = admin panel)
 - `app/api/auth/[...nextauth]/` - NextAuth API routes
-- `components/ui/` - shadcn/ui components
+- `components/` - Custom components (landing page sections, shared components)
+- `components/ui/` - shadcn/ui components ONLY (do not put custom components here)
 - `components/auth/` - Authentication components
+- `components/admin/` - Admin panel components (sidebar, header)
+- `components/examples/` - Example/demo components (ThemeSwitcher, LanguageSwitcher)
 - `lib/i18n/` - Internationalization configuration
 - `lib/auth/` - NextAuth configuration
-- `lib/general/` - General utilities (utils.ts)
-- `messages/` - Translation files (en.json, el.json)
-- `proxy.ts` - Middleware for i18n routing (not middleware.ts)
-- `types/` - Shared TypeScript interfaces
+- `lib/general/` - General utilities (`utils.ts`, `constants.ts` for business data)
 - `lib/stores/` - Zustand state stores (e.g., `dialog-store.ts`)
 - `lib/files/` - File upload utilities (S3/Supabase storage with sharp compression)
-- `components/dialog-provider.tsx` - Global dialog registry (renders all app dialogs)
-- `components/confirm-dialog.tsx` - Reusable confirm dialog using `useDialogStore`
-- `components/examples/` - Example/demo components
+- `messages/` - Translation files (en.json, el.json)
+- `public/images/` - Static images (logo, gallery, hero, services)
+- `proxy.ts` - Middleware for i18n routing (not middleware.ts)
+- `types/` - Shared TypeScript interfaces
 
 ### Key Patterns
 
@@ -75,6 +76,15 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
 - Use `CircleIcon` (`components/CircleIcon.tsx`) for general icon display with colored circular backgrounds
 - Use `SocialIcon` (`components/social-icon.tsx`) for social media link icons with platform-specific colors
+- **Business constants** — All hardcoded business data (phone, email, URLs, social links) lives in `lib/general/constants.ts`. Never scatter magic strings across components.
+
+#### Landing Page Patterns
+
+- **Server/client split** — Sections needing i18n + interactivity use a server wrapper (`getTranslations`) rendering a client child (`useTranslations` + `useState`). Example: `gallery-section.tsx` → `gallery-grid.tsx`.
+- **Navbar** — Fixed, transparent over hero, solid on scroll. Toggle `border-transparent`/`border-border` (not `border-b` on/off) to avoid transition flicker.
+- **Mobile menu** — Slide-in panel from right with backdrop blur overlay and body scroll lock. Never a simple dropdown.
+- **Smooth scrolling** — `scroll-behavior: smooth` on html in globals.css for all anchor links.
+- **Real photos for services** — Use actual photos with gradient overlays instead of generic Lucide icons for service/product cards.
 
 #### Dialog System
 
@@ -94,10 +104,12 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 
 #### Styling
 
-- CSS variables defined in `app/globals.css`
+- CSS variables defined in `app/globals.css` (includes custom brand colors like `--forest`, `--leaf`, `--cream`)
 - Dark mode via `next-themes` with class strategy
 - Custom Tailwind variant: `@custom-variant dark (&:is(.dark *))`
 - Always use semantic color naming (e.g., `text-foreground`, `bg-background`)
+- Use Tailwind 4 canonical classes (`z-100` not `z-[100]`, `bg-linear-to-t` not `bg-gradient-to-t`)
+- All transitions should use `duration-300` — no jarring state changes
 
 ## Authentication Setup
 

@@ -10,9 +10,7 @@ Rules, style preferences, and best practices. Review at session start.
 
 ## Code Style
 
-- **ALWAYS use arrow functions** - Never use `function` declarations or expressions. This includes components, callbacks, utilities, everything.
-  - `const functionName = () => {}` for all functions
-  - `const functionName = async () => {}` for async functions
+- **Prefer arrow functions for client-side code** — callbacks, hooks, utilities, event handlers. Server components and exported async functions can use `function` declarations since they read more naturally with `export async function`.
 - **If/else consistency** - Match formatting between if and else:
   - Both single-line: no braces for either
   - One is multi-line: braces for both
@@ -45,6 +43,7 @@ Rules, style preferences, and best practices. Review at session start.
 ## Component Architecture
 
 - **Server/client separation** - Keep `page.tsx` and `layout.tsx` as server components. Never add `"use client"` to these files. Create separate client components when interactivity is needed.
+- **Server/client split for i18n + interactivity** — When a section needs both translations AND client-side state (lightbox, forms, scroll listeners), create a server component wrapper that calls `getTranslations()` and renders a client child that uses `useTranslations()` + `useState`. Example: `gallery-section.tsx` (server) renders `gallery-grid.tsx` (client).
 - **Component structure order**: State > Callbacks > useEffects > Return. No exceptions.
 - **useEffect placement** - ALL useEffects go immediately before the return statement, after all callbacks.
 - **Interface location** - Component interfaces immediately before component definition. Shared interfaces in `/types` folder.
@@ -66,8 +65,8 @@ Rules, style preferences, and best practices. Review at session start.
 
 ### Loading States
 
-- **NEVER use "..." dots** for loading states in buttons. Always use the reusable `<Spinner />` component from `@/components/ui/spinner`.
-- Pattern: `{isSubmitting ? <Spinner /> : t("save")}`
+- **NEVER use "..." dots** for loading states in buttons. Use a spinner component or icon.
+- Pattern: `{isSubmitting ? <Loader2 className="size-4 animate-spin" /> : t("save")}`
 
 ### Form Labels
 
@@ -80,19 +79,12 @@ Rules, style preferences, and best practices. Review at session start.
 
 - **ALWAYS use shadcn/ui Button** with ONLY variants and sizes.
 - **NEVER add Tailwind classes** that duplicate what a variant already provides.
-- Available variants: `default`, `destructive`, `outline`, `secondary`, `ghost`, `primary`, `gradient`, `link`
-- Available sizes: `sm`, `default`, `lg`, `xl`, `icon`
 - Only add `className` for: layout positioning (`w-full`, `flex-1`) or conditional states (`isOpen && "border-primary"`)
 
-### Typography Components
+### Typography
 
-Always use typography components from `@/components/ui/typography.tsx`:
-
-- `TypographyH1` through `TypographyH4` for headings
-- `TypographyRegular`, `TypographyMedium` for body text
-- `TypographySmallReg`, `TypographySmallMedium` for smaller text
-- `TypographyMiniReg`, `TypographyMiniMedium` for tiny text
-- `TypographyMono` for monospace text
+- Use typography components from `@/components/ui/typography.tsx` for admin/app pages.
+- For landing page sections, raw HTML elements (`<h2>`, `<p>`) with Tailwind classes are fine — they give more design flexibility.
 
 ### ScrollArea (shadcn/ui) — PREFERRED for all scrollable areas
 
@@ -116,14 +108,33 @@ Always use typography components from `@/components/ui/typography.tsx`:
 </div>
 ```
 
-### Icon Components
-
-- **Use `SocialIcon`** (`@/components/social-icon.tsx`) for social media link buttons (Instagram, YouTube, Facebook, etc.). It provides platform-specific colors and hover effects.
-- **Use `CircleIcon`** (`@/components/CircleIcon.tsx`) for general icon display in cards, features lists, or any non-social context. It renders an icon inside a colored circular background.
-
 ### Color
 
 - **Semantic color naming** - Use `text-foreground`, `bg-background`, etc. Never use raw color values.
+- **Custom color tokens** - Define brand colors as CSS variables in globals.css with semantic names (e.g., `--forest`, `--leaf`, `--cream`). Reference them via Tailwind classes (`bg-forest`, `text-leaf`).
+
+### CSS Transitions
+
+- **Never toggle a CSS property on/off with `transition-all`** — e.g., toggling `border-b` causes a flicker because the property appears/disappears. Instead, keep the property always present and toggle its VALUE: use `border-transparent` (invisible) vs `border-border` (visible).
+- **Always use `transition-all duration-300`** or `transition-colors` on interactive elements. No jarring state changes.
+
+### Tailwind 4
+
+- **Use canonical class names** — `z-100` not `z-[100]`, `bg-linear-to-t` not `bg-gradient-to-t`. Tailwind 4 lint will flag these.
+
+### Mobile Design
+
+- **Mobile menus must be slide-in panels** — not cramped dropdowns. Use a full-height panel sliding from the right with backdrop blur overlay, body scroll lock, and proper close button.
+- **Icon-only buttons on mobile when space is tight** — hide button text with `hidden sm:inline` on the text span, keep the icon always visible. Prevents layout breaking on small screens.
+- **Always add `cursor-pointer`** to all interactive/clickable elements.
+
+## Landing Page Patterns
+
+- **Extract business constants** — All hardcoded business data (phone, email, addresses, social URLs, map embeds) goes in `lib/general/constants.ts` as a single exported object. Never scatter these as magic strings across components.
+- **Smooth scrolling** — Add `scroll-behavior: smooth` to the html element in globals.css. All anchor links (`#services`, `#contact`) then scroll smoothly.
+- **Real photos over icons for services/products** — Lucide icons look generic. Use actual photos with gradient overlays and text on top. Download from Pexels if needed.
+- **Image download verification** — When downloading images from Pexels or similar: search by keyword, download, then VISUALLY VERIFY the image matches. IDs and random URLs frequently return wrong/unrelated images. Expect 2-3 retry rounds.
+- **Navbar scroll pattern** — Fixed position, transparent over hero, solid on scroll. Always keep `border-b` present and toggle between `border-transparent` / `border-border` to avoid transition flicker.
 
 ## Next.js Patterns
 
@@ -148,6 +159,7 @@ Always use typography components from `@/components/ui/typography.tsx`:
 - **Lessons go in `tasks/lessons.md`** - NEVER use the auto memory system for coding rules or user preferences. After ANY correction from the user, immediately update THIS file. Read this file at session start.
 - **Error Checking Protocol** - After completing work on any file: (1) Run `pnpm tsc --noEmit`, (2) Run `pnpm lint`, (3) Fix ALL errors before moving on.
 - **Code Review Mindset** - Question if implementation is correct. Push back on incorrect requirements. Prefer native solutions over reinventing the wheel. Check for latest best practices.
+- **Screenshot verification** - After each meaningful UI change, screenshot and visually verify. Don't batch all changes and check once at the end. Catch issues early.
 
 ---
 
