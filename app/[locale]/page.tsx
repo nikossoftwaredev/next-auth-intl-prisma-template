@@ -24,6 +24,7 @@ import {
   LayoutDashboard
 } from "lucide-react";
 import GoogleReviews from "@/components/GoogleReviews";
+import { ConfirmDialogExample } from "@/components/examples/confirm-dialog-example";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/i18n/navigation";
 
@@ -192,6 +193,9 @@ const Home = async ({ params }: BasePageProps) => {
           </Card>
 
         </div>
+
+        {/* Confirm Dialog Example */}
+        <ConfirmDialogExample />
 
         {/* Google Reviews */}
         <GoogleReviews placeId={process.env.NEXT_PUBLIC_GOOGLE_PLACE_ID || ""} />

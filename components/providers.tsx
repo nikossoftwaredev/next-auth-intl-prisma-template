@@ -1,9 +1,12 @@
 "use client";
 
-import { NextIntlClientProvider, AbstractIntlMessages } from "next-intl";
 import { SessionProvider } from "next-auth/react";
+import { AbstractIntlMessages,NextIntlClientProvider } from "next-intl";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+
+import { DialogProvider } from "@/components/dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 type Props = {
   children: React.ReactNode;
@@ -21,7 +24,10 @@ export const Providers = ({ children, messages, locale }: Props) => {
         disableTransitionOnChange
       >
         <NextIntlClientProvider messages={messages} locale={locale}>
-          {children}
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
+          <DialogProvider />
           <Toaster />
         </NextIntlClientProvider>
       </NextThemesProvider>

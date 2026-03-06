@@ -30,6 +30,8 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - **Tailwind CSS 4** with CSS variables and modern color space
 - **shadcn/ui** components (New York style)
 - **TypeScript** with strict mode
+- **Zustand** for client-side state management
+- **sharp** for server-side image compression
 
 ### Project Structure
 
@@ -43,6 +45,11 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - `messages/` - Translation files (en.json, el.json)
 - `proxy.ts` - Middleware for i18n routing (not middleware.ts)
 - `types/` - Shared TypeScript interfaces
+- `lib/stores/` - Zustand state stores (e.g., `dialog-store.ts`)
+- `lib/files/` - File upload utilities (S3/Supabase storage with sharp compression)
+- `components/dialog-provider.tsx` - Global dialog registry (renders all app dialogs)
+- `components/confirm-dialog.tsx` - Reusable confirm dialog using `useDialogStore`
+- `components/examples/` - Example/demo components
 
 ### Key Patterns
 
@@ -68,6 +75,22 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
 - Use `CircleIcon` (`components/CircleIcon.tsx`) for general icon display with colored circular backgrounds
 - Use `SocialIcon` (`components/social-icon.tsx`) for social media link icons with platform-specific colors
+
+#### Dialog System
+
+- **Zustand store** at `lib/stores/dialog-store.ts` manages global dialog state imperatively
+- Open dialogs with `useDialogStore().openDialog(key, data?, onSuccess?)`
+- Register new dialogs in `components/dialog-provider.tsx`
+- Each dialog checks `currentDialog === MY_KEY` to determine visibility
+- Use individual Zustand selectors (not full store destructuring) to avoid unnecessary re-renders
+- `components/confirm-dialog.tsx` is the reusable confirm/delete dialog (key: `CONFIRM_DIALOG`)
+
+#### File Uploads
+
+- `lib/files/upload.ts` handles S3-compatible uploads to Supabase storage
+- All images are auto-compressed and converted to WebP via `sharp` before upload
+- `uploadFile(buffer, fileName)` returns the public URL (extension changed to `.webp`)
+- `deleteFile(fileUrl)` removes a file by its public URL
 
 #### Styling
 

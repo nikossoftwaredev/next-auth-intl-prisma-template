@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 
 // S3-compatible storage configuration
 const s3Client = new S3Client({
@@ -17,43 +18,47 @@ const s3Client = new S3Client({
 
 export const IMAGES_BUCKET = "images";
 
+const MAX_DIMENSION = 1200;
+const WEBP_QUALITY = 85;
+
+const compressImage = async (buffer: Buffer): Promise<Buffer> => {
+  return sharp(buffer)
+    .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: "inside", withoutEnlargement: true })
+    .webp({ quality: WEBP_QUALITY })
+    .toBuffer();
+};
+
 export const uploadFile = async (
   file: Buffer,
   fileName: string,
-  contentType: string,
 ): Promise<string> => {
+  const compressed = await compressImage(file);
+  const webpFileName = fileName.replace(/\.\w+$/, ".webp");
+
   const command = new PutObjectCommand({
     Bucket: IMAGES_BUCKET,
-    Key: fileName,
-    Body: file,
-    ContentType: contentType,
+    Key: webpFileName,
+    Body: compressed,
+    ContentType: "image/webp",
   });
 
   await s3Client.send(command);
 
-  // Construct public URL
-  // Format: https://<project-ref>.supabase.co/storage/v1/object/public/<bucket>/<path>
   const projectRef = process.env
     .SUPABASE_S3_ENDPOINT!.replace("https://", "")
     .replace(".storage.supabase.co/storage/v1/s3", "");
 
-  const publicUrl = `https://${projectRef}.supabase.co/storage/v1/object/public/${IMAGES_BUCKET}/${fileName}`;
-
-  return publicUrl;
+  return `https://${projectRef}.supabase.co/storage/v1/object/public/${IMAGES_BUCKET}/${webpFileName}`;
 };
 
 export const deleteFile = async (fileUrl: string): Promise<void> => {
-  // Extract filename from URL
-  // Format: https://<project-ref>.supabase.co/storage/v1/object/public/images/<filename>
   const urlParts = fileUrl.split(`/public/${IMAGES_BUCKET}/`);
   if (urlParts.length !== 2) throw new Error("Invalid file URL format");
 
-  const fileName = urlParts[1];
-
-  const command = new DeleteObjectCommand({
-    Bucket: IMAGES_BUCKET,
-    Key: fileName,
-  });
-
-  await s3Client.send(command);
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: IMAGES_BUCKET,
+      Key: urlParts[1],
+    })
+  );
 };
