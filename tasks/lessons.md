@@ -116,6 +116,11 @@ Always use typography components from `@/components/ui/typography.tsx`:
 </div>
 ```
 
+### Icon Components
+
+- **Use `SocialIcon`** (`@/components/social-icon.tsx`) for social media link buttons (Instagram, YouTube, Facebook, etc.). It provides platform-specific colors and hover effects.
+- **Use `CircleIcon`** (`@/components/CircleIcon.tsx`) for general icon display in cards, features lists, or any non-social context. It renders an icon inside a colored circular background.
+
 ### Color
 
 - **Semantic color naming** - Use `text-foreground`, `bg-background`, etc. Never use raw color values.
