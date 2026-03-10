@@ -10,4 +10,4 @@
 - **Button consistency** — all buttons share unified style, sizing, and hover behavior across all pages
 - **Footer** — present on all pages, includes "Made by Hexaigon" credit to the left of it use the https://lucide.dev/icons/hexagon from the library we have and make it primary color.
 - **Open Graph image** — OG share image is a 1920x1080 screenshot of the website, used as the preview when sharing on social media
-- **Favicon** — a `.ico` favicon is set and visible on all browser tabs
+- **Favicon** — a `.ico` remove the vercel default one and make one using sharp based on logo png. and use this as favicon.ico
