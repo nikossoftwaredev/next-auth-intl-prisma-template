@@ -86,6 +86,28 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - **Smooth scrolling** — `scroll-behavior: smooth` on html in globals.css for all anchor links.
 - **Real photos for services** — Use actual photos with gradient overlays instead of generic Lucide icons for service/product cards.
 
+#### Button Component
+
+- `Button` has built-in `loading` and `icon` props:
+  - `loading={true}` → shows `<Loader2>` spinner, auto-disables button
+  - `icon={<Plus />}` → renders icon before children, hidden when loading
+  - `variant="brand"` → uses `--brand-primary` CSS variable for tenant-specific branding
+- Pattern: `<Button loading={isPending} icon={<Save className="size-4" />}>Save</Button>`
+
+#### Radix Scrollbar Fix
+
+- Radix dialogs/sheets inject scroll-locking styles that cause page layout shift (scrollbar disappears, content jumps).
+- **Already fixed in `globals.css`** — forces `overflow-y: scroll !important` on html and zeroes out all compensating margins/padding on `body[data-scroll-locked]`.
+- If you add a new CSS file or reset globals, ensure this fix is preserved.
+
+#### Reusable Components
+
+Standard extracted components in `components/` (NOT `components/ui/`):
+- `EmptyState` — icon + title + optional description (for empty tables, lists, etc.)
+- `PageHeader` — title + optional description + children slot for action buttons
+- `UserAvatar` — image with initials fallback, size variants (sm/md/lg)
+- `PaginationControls` — prev/next with page count, auto-hides when single page
+
 #### Dialog System
 
 - **Zustand store** at `lib/stores/dialog-store.ts` manages global dialog state imperatively

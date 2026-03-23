@@ -154,6 +154,31 @@ Rules, style preferences, and best practices. Review at session start.
   }
   ```
 
+## Drag & Drop (dnd-kit)
+
+- **Use `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities`** for any drag-and-drop UI.
+- **`PointerSensor` with `distance: 8`** — prevents accidental drags when clicking interactive elements.
+- **`closestCorners`** collision detection for column/grid-based layouts (e.g., Kanban boards).
+- **`DragOverlay`** — always render a ghost card while dragging for smooth UX. Apply `shadow-xl rotate-2 opacity-90` for a natural "picked up" feel.
+- **`useSortable`** for draggable items, **`useDroppable`** for drop targets (columns).
+- **Optimistic updates** — move item visually on drop, revert on API error.
+
+## State Transitions
+
+- **`VALID_TRANSITIONS` map** — define allowed transitions as `Record<Status, Status[]>`. Keep it client-side for instant validation before API calls.
+- **Flexible forward skips** — don't force step-by-step. Users should be able to skip stages forward (e.g., PREPARING → DELIVERING directly).
+- **Terminal states** — map to empty arrays `[]`. Disable drag on items in terminal states.
+- **Special transitions** — some transitions may require extra input (e.g., reason for rejection, estimated time). Show a dialog before confirming the transition.
+
+## Reusable Component Extraction
+
+- **Extract when 3+ duplications exist** across the codebase.
+- **Standard reusable set** — keep these in `components/` (not `components/ui/`):
+  - `EmptyState` — icon + title + optional description
+  - `PageHeader` — title + optional description + children slot for action buttons
+  - `UserAvatar` — image with initials fallback, size variants (sm/md/lg)
+  - `PaginationControls` — prev/next buttons with page count, auto-hides when totalPages <= 1
+
 ## Workflow
 
 - **Lessons go in `tasks/lessons.md`** - NEVER use the auto memory system for coding rules or user preferences. After ANY correction from the user, immediately update THIS file. Read this file at session start.
