@@ -1,7 +1,17 @@
 # Definition of Done — Website Deliverable
 
 - **Mobile-friendly** — fully responsive across all screen sizes (mobile, tablet, desktop)
-- **Fast** — optimized load times, minified assets, no unnecessary blocking resources
+- **Blazing fast / no lag** — the page must feel instant with zero jank. Apply these React & Next.js performance best practices:
+  - **Server Components by default** — only add `"use client"` for event handlers, browser APIs, useState/useEffect, animations. Push it as far down the tree as possible.
+  - **Small components with isolated state** — a component that owns state re-renders only itself. Extract "islands of interactivity" into small client components; keep wrappers as Server Components.
+  - **Lazy load heavy components** — use `next/dynamic` with `ssr: false` for modals, charts, editors, and below-the-fold widgets. Wrap route segments in `<Suspense>` to stream partial HTML.
+  - **Memoize where it matters** — use `React.memo` on leaf components that receive stable props but render often. Use `useMemo`/`useCallback` only for expensive derivations, not trivial values. Never define objects/arrays/functions inline in JSX props of memoized children.
+  - **Images with `next/image`** — automatic WebP/AVIF, responsive srcset, lazy loading. Set explicit width/height to prevent CLS. Use `priority` only on above-the-fold LCP images.
+  - **Fonts with `next/font`** — self-hosted, preloaded, zero layout shift, zero external requests.
+  - **Third-party scripts via `next/script`** — use `strategy="lazyOnload"` for analytics/chat, `strategy="afterInteractive"` for tag managers. Never raw `<script>` tags.
+  - **CSS transitions only on `transform`/`opacity`** — never animate `width`, `height`, `top`, `left`. Avoid `will-change` on more than a few elements.
+  - **Use `useTransition`/`useDeferredValue`** for non-urgent state updates to keep the UI responsive.
+  - **Bundle size** — audit with `@next/bundle-analyzer`, use named imports (not full library imports), target < 100KB JS per route chunk.
 - **SEO optimized** — proper meta tags, headings structure, sitemap, and semantic HTML
 - **Images optimized** — compressed, correctly sized, with alt text on all images
 - **AEO optimized** — structured data / schema markup in place, content formatted for AI-driven answer engines

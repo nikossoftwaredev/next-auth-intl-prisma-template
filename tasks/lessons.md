@@ -57,10 +57,17 @@ Rules, style preferences, and best practices. Review at session start.
 - **Memory leak prevention** - Use `isMountedRef` pattern for async operations in useEffects.
 - **Always clean up** - Return cleanup function for subscriptions, timers, listeners.
 
-### Performance
+### Performance — Zero Lag Rules
 
-- **Always use `useCallback`/`useMemo`** when passing functions or computed values to child components.
-- **Don't over-optimize** - Only memoize when there's an actual performance concern.
+- **Server Components by default** — only `"use client"` for event handlers, browser APIs, useState/useEffect, animations. Push it as far down the tree as possible.
+- **Small components with isolated state** — extract interactive pieces into tiny client components so parent Server Components ship zero JS. A component that owns state re-renders only itself.
+- **Lazy load heavy client components** — use `next/dynamic` with `ssr: false` for modals, charts, editors, below-the-fold widgets. Wrap route segments in `<Suspense>`.
+- **Memoize where it matters** — `React.memo` on leaf components with stable props. `useMemo`/`useCallback` for expensive derivations only. Never define objects/arrays/functions inline in JSX props of memoized children.
+- **Images with `next/image`** — automatic WebP/AVIF, responsive srcset, lazy loading. Set explicit width/height to prevent CLS. `priority` only on above-the-fold LCP images.
+- **Fonts with `next/font`** — self-hosted, preloaded, zero layout shift.
+- **Third-party scripts via `next/script`** — `strategy="lazyOnload"` for analytics, `strategy="afterInteractive"` for tag managers. Never raw `<script>` tags.
+- **CSS transitions only on `transform`/`opacity`** — never animate width/height/top/left. Avoid `will-change` on more than a few elements.
+- **Use `useTransition`/`useDeferredValue`** for non-urgent state updates to keep the UI responsive.
 - **Prefer derived state over useEffect** for computed values.
 
 ### Loading States
