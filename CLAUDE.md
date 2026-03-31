@@ -74,8 +74,9 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 - **Always use shadcn/ui components** — search the web for the correct install command (`npx shadcn@latest add <component>`) and usage patterns before implementing. Do not guess component APIs; look them up.
 - **Always use Lucide icons** (`lucide-react`) — they are the icon set used by shadcn/ui. Search for the right icon name on the web when needed.
 - **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
-- Use `CircleIcon` (`components/CircleIcon.tsx`) for general icon display with colored circular backgrounds
-- Use `SocialIcon` (`components/social-icon.tsx`) for social media link icons with platform-specific colors
+- **`CircleIcon`** (`components/CircleIcon.tsx`) — Use for icon display in feature cards, services, about sections, or any non-social context. Renders an icon inside a colored circular background.
+- **`SocialIcon`** (`components/social-icon.tsx`) — Use for ALL social media links (footer, contact, navbar). Provides platform-specific colors (Instagram pink, YouTube red, etc.) and hover effects. Never build custom social link buttons — always use this component.
+- **`ExpandMap`** (`components/expand-map.tsx`) — Use for ALL map displays (contact sections, footer, location cards). Takes `address`, `mapsUrl`, and `coordinates` props.
 - **Business constants** — All hardcoded business data (phone, email, URLs, social links) lives in `lib/general/constants.ts`. Never scatter magic strings across components.
 
 #### Landing Page Patterns

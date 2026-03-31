@@ -69,7 +69,7 @@ For any images I DON'T have (services, products, etc.), download real photos fro
 
 10. **Newsletter** — Email signup with branded background, input + button (icon-only on mobile), privacy note.
 
-11. **Footer** — Brand, quick links, contact info, social icons, map, copyright.
+11. **Footer** — Brand, quick links, contact info, social icons (use `SocialIcon` from `@/components/social-icon.tsx`), map, copyright, "Made by Hexaigon" credit.
 
 Delete any sections you don't need. Reorder as needed.
 
@@ -88,6 +88,8 @@ Delete any sections you don't need. Reorder as needed.
 - **Color palette**: Define custom CSS variables in globals.css that match the business identity. Pick a dominant brand color + accent. Use semantic names (--primary, --forest, --cream, etc.).
 - **No generic fonts**: Pick fonts that suit the business language and tone. Don't default to Inter/Roboto/Arial.
 - **Real photos over icons**: For services and products, use actual photos. Only use Lucide icons for small UI elements and feature highlights.
+- **Icon components**: Use `CircleIcon` (`@/components/CircleIcon.tsx`) for icon display in feature cards, about sections, and highlights. Use `SocialIcon` (`@/components/social-icon.tsx`) for ALL social media links (footer, contact, navbar) — never build custom social buttons.
+- **Maps**: Use `ExpandMap` (`@/components/expand-map.tsx`) for ALL map displays. Never embed raw Google Maps iframes. Props: `address`, `mapsUrl`, `coordinates`.
 - **Dark mode**: Every section must work in light AND dark. Test both.
 - **Mobile responsive**: Test at 375px. Mobile menu = slide-in panel, never a cramped dropdown.
 - **Smooth scrolling**: `scroll-behavior: smooth` on html. All anchor links scroll smoothly.

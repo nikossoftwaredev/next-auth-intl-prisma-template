@@ -128,6 +128,13 @@ Rules, style preferences, and best practices. Review at session start.
 - **Icon-only buttons on mobile when space is tight** — hide button text with `hidden sm:inline` on the text span, keep the icon always visible. Prevents layout breaking on small screens.
 - **Always add `cursor-pointer`** to all interactive/clickable elements.
 
+### Icon Components
+
+- **`SocialIcon`** (`@/components/social-icon.tsx`) — ALWAYS use for social media links in footer, contact sections, navbar. Never build custom social buttons. Provides platform-specific colors (instagram, youtube, facebook, twitter, tiktok, linkedin, spotify) and hover effects.
+- **`CircleIcon`** (`@/components/CircleIcon.tsx`) — Use for icon display in feature cards, services, about sections, highlights. Renders a Lucide icon inside a colored circular background.
+- **Lucide icons** — Only use raw Lucide icons for small inline UI elements (button icons, form labels, nav items). For any prominent icon display, wrap in `CircleIcon`.
+- **`ExpandMap`** (`@/components/expand-map.tsx`) — ALWAYS use for map displays (contact sections, footer, location pages). Never embed raw Google Maps iframes. Props: `address`, `mapsUrl`, `coordinates`.
+
 ## Landing Page Patterns
 
 - **Extract business constants** — All hardcoded business data (phone, email, addresses, social URLs, map embeds) goes in `lib/general/constants.ts` as a single exported object. Never scatter these as magic strings across components.
