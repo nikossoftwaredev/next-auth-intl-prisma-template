@@ -75,10 +75,16 @@ Rules, style preferences, and best practices. Review at session start.
 - **NEVER use "..." dots** for loading states in buttons. Use a spinner component or icon.
 - Pattern: `{isSubmitting ? <Loader2 className="size-4 animate-spin" /> : t("save")}`
 
-### Form Labels
+### Form Inputs & Labels
 
-- **Add Lucide icons to form labels** where applicable. Use `inline size-3.5` class on the icon.
+- **Add Lucide icons to ALL form labels and inputs** — every input field, textarea, and select should have a relevant Lucide icon. Use `inline size-3.5` class on the icon.
 - Pattern: `<FormLabel><User className="inline size-3.5" /> {t("name")}</FormLabel>`
+- For inputs with icons inside: use a wrapper div with the icon positioned absolutely at the start, and `pl-9` on the input.
+
+### shadcn/ui Component Rule
+
+- **If a component exists in the shadcn/ui library, use it** — never build custom versions of Button, Dialog, Select, Input, etc. Download via `npx shadcn@latest add <component>` and use the official API.
+- **`cursor-pointer` on ALL interactive elements** — buttons, dropdowns, selects, links, toggles, switches, cards with onClick. If a shadcn component doesn't include it by default, add it via className or override in `components/ui/`.
 
 ## UI / Styling
 

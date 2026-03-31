@@ -71,8 +71,10 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 #### UI & Design Rules
 
 - **Always use the frontend-design plugin** when working on any design or UI task
-- **Always use shadcn/ui components** — search the web for the correct install command (`npx shadcn@latest add <component>`) and usage patterns before implementing. Do not guess component APIs; look them up.
+- **Always use shadcn/ui components** — if a component exists in the shadcn/ui online library, download it (`npx shadcn@latest add <component>`) and use it. Never build custom versions of components that shadcn already provides. Search the web for the correct install command and usage patterns before implementing. Do not guess component APIs; look them up.
 - **Always use Lucide icons** (`lucide-react`) — they are the icon set used by shadcn/ui. Search for the right icon name on the web when needed.
+- **Icons in form inputs** — All input fields and textareas should have a Lucide icon at the start (inside the input or as a label prefix). Use `inline size-3.5` on the icon. Pattern: `<FormLabel><User className="inline size-3.5" /> {t("name")}</FormLabel>`
+- **`cursor-pointer` on all interactive elements** — Every clickable element (buttons, dropdowns, selects, links, toggles, cards with onClick) must have `cursor-pointer`. Add it to shadcn component overrides if missing.
 - **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
 - **`CircleIcon`** (`components/CircleIcon.tsx`) — Use for icon display in feature cards, services, about sections, or any non-social context. Renders an icon inside a colored circular background.
 - **`SocialIcon`** (`components/social-icon.tsx`) — Use for ALL social media links (footer, contact, navbar). Provides platform-specific colors (Instagram pink, YouTube red, etc.) and hover effects. Never build custom social link buttons — always use this component.

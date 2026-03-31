@@ -93,8 +93,10 @@ Delete any sections you don't need. Reorder as needed.
 - **Dark mode**: Every section must work in light AND dark. Test both.
 - **Mobile responsive**: Test at 375px. Mobile menu = slide-in panel, never a cramped dropdown.
 - **Smooth scrolling**: `scroll-behavior: smooth` on html. All anchor links scroll smoothly.
-- **Hover states**: Every clickable element needs cursor-pointer + visible hover effect.
+- **Hover states**: Every clickable element needs `cursor-pointer` + visible hover effect. This includes buttons, dropdowns, selects, links, toggles, cards with onClick.
 - **Transitions**: Use duration-300 on all state changes. No jarring jumps.
+- **Icons in form inputs**: All input fields and textareas should have a relevant Lucide icon at the start. Use label prefix or absolutely positioned icon inside the input.
+- **Use shadcn/ui for everything**: If a component exists in the shadcn/ui library, download and use it. Never build custom versions of existing shadcn components.
 
 ## Architecture Rules
 
