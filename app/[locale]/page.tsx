@@ -1,6 +1,22 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  CreditCard,
+  Database,
+  GitBranch,
+  Languages,
+  LayoutDashboard,
+  Palette,
+  Shield,
+  Sparkles} from "lucide-react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/auth";
+import { setRequestLocale } from "next-intl/server";
+
+import { ConfirmDialogExample } from "@/components/examples/confirm-dialog-example";
+import { LanguageSwitcher } from "@/components/examples/language-switcher";
+import { LoginButton } from "@/components/examples/login-button";
+import { ThemeSwitcher } from "@/components/examples/ThemeSwitcher";
+import { TodoList } from "@/components/examples/todo-list";
+import GoogleReviews from "@/components/GoogleReviews";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,31 +24,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ThemeSwitcher } from "@/components/examples/ThemeSwitcher";
-import { LoginButton } from "@/components/examples/login-button";
-import { LanguageSwitcher } from "@/components/examples/language-switcher";
-import { TodoList } from "@/components/examples/todo-list";
-import { BasePageProps } from "@/types/page-props";
-import {
-  Shield,
-  Database,
-  Palette,
-  Languages,
-  Sparkles,
-  Github,
-  CreditCard,
-  LayoutDashboard
-} from "lucide-react";
-import GoogleReviews from "@/components/GoogleReviews";
-import { ConfirmDialogExample } from "@/components/examples/confirm-dialog-example";
-import { Button } from "@/components/ui/button";
+import { authOptions } from "@/lib/auth/auth";
 import { Link } from "@/lib/i18n/navigation";
+import { BasePageProps } from "@/types/page-props";
 
 const Home = async ({ params }: BasePageProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("HomePage");
   const session = await getServerSession(authOptions);
 
   return (
@@ -62,7 +61,7 @@ const Home = async ({ params }: BasePageProps) => {
                 rel="noopener noreferrer"
                 className="gap-2"
               >
-                <Github className="size-4" />
+                <GitBranch className="size-4" />
                 View on GitHub
               </a>
             </Button>

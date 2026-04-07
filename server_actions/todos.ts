@@ -1,9 +1,10 @@
 "use server";
 
-import { prisma } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/auth";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "@/lib/auth/auth";
+import { prisma } from "@/lib/db";
 
 export const createTodo = async (title: string, description?: string) => {
   const session = await getServerSession(authOptions);

@@ -1,9 +1,8 @@
 "use client"
 
+import { AnimatePresence, motion, useMotionValue, useSpring,useTransform } from "framer-motion"
 import type React from "react"
-
-import { useState, useRef } from "react"
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion"
+import { useRef,useState } from "react"
 
 interface ExpandMapProps {
   /** Address displayed on the card */

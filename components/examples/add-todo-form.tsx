@@ -1,12 +1,13 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useState } from "react";
-import { createTodo } from "@/server_actions/todos";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { createTodo } from "@/server_actions/todos";
 
 interface AddTodoFormProps {
   onTodoAdded: () => void;
@@ -39,7 +40,7 @@ export const AddTodoForm = ({ onTodoAdded }: AddTodoFormProps) => {
           description: result.error || "Failed to create todo",
           variant: "destructive",
         });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Something went wrong",

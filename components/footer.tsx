@@ -1,5 +1,3 @@
-import { Link } from "@/lib/i18n/navigation";
-
 const Footer = () => {
   return (
     <footer className="w-full border-t bg-background py-6">

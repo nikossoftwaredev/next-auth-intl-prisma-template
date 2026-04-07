@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { getTodos } from "@/server_actions/todos";
-import { TodoItem } from "./todo-item";
-import { AddTodoForm } from "./add-todo-form";
+import { useCallback,useEffect, useState } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TypographyRegular } from "@/components/ui/typography";
+import { getTodos } from "@/server_actions/todos";
+
+import { AddTodoForm } from "./add-todo-form";
+import { TodoItem } from "./todo-item";
 
 interface Todo {
   id: string;

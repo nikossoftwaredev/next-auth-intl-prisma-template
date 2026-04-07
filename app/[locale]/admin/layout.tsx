@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { setRequestLocale } from "next-intl/server";
 
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { ErrorPage } from "@/components/error-page";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";

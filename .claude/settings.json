@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(pnpm tsc --noEmit)",
-      "Bash(pnpm add @aws-sdk/client-s3)"
+      "Bash(pnpm add @aws-sdk/client-s3)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ]
   },
  "enabledPlugins": {

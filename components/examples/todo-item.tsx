@@ -1,16 +1,17 @@
 "use client";
 
+import { Check, Edit2, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { deleteTodo, toggleTodoComplete, updateTodo } from "@/server_actions/todos";
+
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card } from "@/components/ui/card";
-import { Trash2, Edit2, Check, X } from "lucide-react";
 import { TypographyRegular, TypographySmallReg } from "@/components/ui/typography";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/general/utils";
+import { deleteTodo, toggleTodoComplete, updateTodo } from "@/server_actions/todos";
 
 interface TodoItemProps {
   todo: {
@@ -44,7 +45,7 @@ export const TodoItem = ({ todo, onUpdate }: TodoItemProps) => {
           description: result.error || "Failed to update todo",
           variant: "destructive",
         });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -73,7 +74,7 @@ export const TodoItem = ({ todo, onUpdate }: TodoItemProps) => {
           description: result.error || "Failed to delete todo",
           variant: "destructive",
         });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -106,7 +107,7 @@ export const TodoItem = ({ todo, onUpdate }: TodoItemProps) => {
           description: result.error || "Failed to update todo",
           variant: "destructive",
         });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Something went wrong",

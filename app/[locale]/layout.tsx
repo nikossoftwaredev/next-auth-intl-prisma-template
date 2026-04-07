@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import { setRequestLocale, getMessages } from "next-intl/server";
-import { Roboto } from "next/font/google";
-import { routing } from "@/lib/i18n/routing";
-import { Providers } from "@/components/providers";
-import { BaseLayoutProps } from "@/types/page-props";
 import "./globals.css";
+
+import type { Metadata } from "next";
+import { Roboto } from "next/font/google";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
+import { getMessages,setRequestLocale } from "next-intl/server";
+
+import { Providers } from "@/components/providers";
+import { routing } from "@/lib/i18n/routing";
+import { BaseLayoutProps } from "@/types/page-props";
 
 const roboto = Roboto({
   variable: "--font-roboto",
