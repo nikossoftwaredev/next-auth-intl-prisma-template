@@ -106,6 +106,7 @@ npx shadcn@latest add <component>  # Add new shadcn/ui components
 #### Reusable Components
 
 Standard extracted components in `components/` (NOT `components/ui/`):
+
 - `EmptyState` — icon + title + optional description (for empty tables, lists, etc.)
 - `PageHeader` — title + optional description + children slot for action buttons
 - `UserAvatar` — image with initials fallback, size variants (sm/md/lg)
@@ -163,6 +164,7 @@ Standard extracted components in `components/` (NOT `components/ui/`):
 - **Locale Validation**: Layout validates locale and returns 404 for invalid locales
 - **Static Generation**: Uses `generateStaticParams()` for all locale variants
 - **Prisma Setup**: Connected to Supabase PostgreSQL database with User and Todo models
+- **Package Versions**: When adding a new package, always install the latest stable version. Never install outdated or pinned versions without explicit reason.
 
 ## Development Guidelines
 
