@@ -16,7 +16,16 @@
 - **Images optimized** — compressed, correctly sized, with alt text on all images
 - **AEO optimized** — structured data / schema markup in place, content formatted for AI-driven answer engines
 - **Bilingual** — both language versions fully functional, with correct routing/switching and no missing translations
-- **Consistent color palette** — all UI elements follow the agreed brand colors throughout
+- **Consistent color palette (UI/UX best practices)** — all UI elements follow the agreed brand colors throughout, defined as CSS variables in `globals.css` and consumed via semantic Tailwind tokens (`bg-background`, `text-foreground`, `bg-primary`, `text-muted-foreground`, etc.). Never hardcode hex values in components.
+  - **60-30-10 rule** — ~60% neutral/background, ~30% secondary/surface, ~10% accent/primary for CTAs and highlights. Don't drown the UI in brand color.
+  - **WCAG AA contrast** — body text ≥ 4.5:1, large text and UI components ≥ 3:1. Verify primary-on-background and foreground-on-primary pairings before shipping.
+  - **Limited palette** — 1 primary, 1 secondary/accent, a neutral ramp, plus semantic states (success/warning/destructive/info). No rogue one-off colors.
+  - **Light + dark mode parity** — every color token has a dark-mode counterpart with equivalent contrast; never rely on a single hex that only works in one theme.
+  - **Accent restraint** — reserve the primary color for the most important action per view. Secondary actions use `outline`/`ghost` variants, not a second saturated color.
+- **Framer Motion for aliveness** — add `framer-motion` (`motion/react`) animations wherever they genuinely enhance the experience, so the site feels alive rather than static. Keep motion purposeful, not decorative.
+  - **Where to add it** — hero headline/subheadline entrance, section reveals on scroll (`whileInView` with `viewport={{ once: true }}`), staggered children in grids/lists (gallery cards, service cards, feature lists), page transitions, modal/sheet mount animations, button/card hover micro-interactions (`whileHover`, `whileTap`), number counters, and accordion/tab content swaps (`AnimatePresence`).
+  - **How to do it right** — animate only `transform` and `opacity`; use spring or `ease-out` with 200–500ms durations; stagger children by 50–100ms; respect `prefers-reduced-motion` via `useReducedMotion()` and disable or shorten motion accordingly; keep client components small and colocated (don't wrap entire server trees in `"use client"` just to animate a leaf).
+  - **Where NOT to add it** — critical form submits, data tables, above-the-fold LCP content that would delay paint, or anywhere it would cause layout shift.
 - **Button consistency** — all buttons share unified style, sizing, and hover behavior across all pages
 - **Footer** — present on all pages, includes "Made by Hexaigon" credit linking to https://hexaigon.gr (open in new tab with `rel="noopener noreferrer"`). To the left of the text, use the https://lucide.dev/icons/hexagon icon from the library we have and make it primary color.
 - **Open Graph image** — OG share image is a 1920x1080 screenshot of the website, used as the preview when sharing on social media
