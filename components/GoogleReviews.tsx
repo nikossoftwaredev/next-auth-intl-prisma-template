@@ -1,18 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
-
-import {
-  getGoogleReviews,
-  PlaceReviewsResponse,
-} from "@/server_actions/get-google-reviews";
-
-const MOCK_DATA: PlaceReviewsResponse = {
-  rating: 4.9,
-  user_ratings_total: 120,
-  url: "#",
-  reviews: [],
-};
+import { getGoogleReviews } from "@/lib/google/reviews";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 48 48" className="size-12">
@@ -27,28 +13,13 @@ interface ReviewsProps {
   placeId: string;
 }
 
-const GoogleReviews = ({ placeId }: ReviewsProps) => {
-  const [reviewsData, setReviewsData] = useState<PlaceReviewsResponse>(MOCK_DATA);
-  const [loading, setLoading] = useState(true);
+const GoogleReviews = async ({ placeId }: ReviewsProps) => {
+  const reviewsData = await getGoogleReviews(placeId);
+  const rating = reviewsData?.rating;
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        setLoading(true);
-        const data = await getGoogleReviews(placeId);
-        if (data) setReviewsData(data);
-      } catch (err) {
-        console.error("Failed to fetch Google reviews:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (placeId) fetchReviews();
-  }, [placeId]);
+  if (!reviewsData || !rating) return null;
 
-  const { rating, user_ratings_total, url } = reviewsData;
-
-  if (!loading && rating === 0) return null;
+  const { user_ratings_total, url } = reviewsData;
 
   return (
     <div className="relative bg-card/80 backdrop-blur-sm w-72 overflow-hidden border border-border/20 rounded-2xl shadow-lg hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
@@ -67,15 +38,14 @@ const GoogleReviews = ({ placeId }: ReviewsProps) => {
 
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl font-bold text-orange-500">
-                {rating?.toFixed(1) ?? "0.0"}
+                {rating.toFixed(1)}
               </span>
               <div className="flex">
                 {[...Array(5)].map((_, i) => {
                   const starValue = i + 1;
-                  const isFilled = rating ? rating >= starValue : false;
-                  const isPartiallyFilled = rating
-                    ? rating >= starValue - 0.5 && rating < starValue
-                    : false;
+                  const isFilled = rating >= starValue;
+                  const isPartiallyFilled =
+                    rating >= starValue - 0.5 && rating < starValue;
 
                   return (
                     <div key={i} className="relative">

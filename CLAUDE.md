@@ -229,6 +229,12 @@ All coding rules, style preferences, and best practices are in `tasks/lessons.md
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
 
+## Writing Style
+
+- **Em dashes are never allowed.** Do not use the `—` character, and do not use `--` as a substitute for one.
+- This applies everywhere: UI copy, translation files (`messages/en.json`, `messages/el.json`), code comments, JSDoc, variable names, commit messages, PR descriptions, documentation, and chat responses.
+- Rewrite with a comma, a colon, parentheses, or two separate sentences instead.
+
 ## Screenshot Workflow
 
 - Puppeteer is installed as a devDependency with bundled Chromium.

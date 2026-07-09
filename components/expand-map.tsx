@@ -7,7 +7,7 @@ import { useRef,useState } from "react"
 interface ExpandMapProps {
   /** Address displayed on the card */
   address: string
-  /** Google Maps URL — opened on click when expanded */
+  /** Google Maps URL, opened on click when expanded */
   mapsUrl: string
   /** Optional coordinates string shown when expanded */
   coordinates?: string
