@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+import { getSiteUrl } from "@/lib/general/site-url";
 
 const robots = (): MetadataRoute.Robots => ({
   rules: {
@@ -8,7 +8,7 @@ const robots = (): MetadataRoute.Robots => ({
     allow: "/",
     disallow: ["/api/", "/admin/"],
   },
-  sitemap: `${BASE_URL}/sitemap.xml`,
+  sitemap: `${getSiteUrl()}/sitemap.xml`,
 });
 
 export default robots;
