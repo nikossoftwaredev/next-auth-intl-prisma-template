@@ -14,7 +14,7 @@ Replace `<TARGET_URL>` with the website you want to rework, then paste everythin
 
 I want you to rework an existing website into this Next.js project. The target site is: `<TARGET_URL>`
 
-Follow CLAUDE.md and tasks/lessons.md for all conventions, code style, and component usage.
+Follow CLAUDE.md and the rules in `.claude/rules/` for all conventions, code style, and component usage.
 
 ### Phase 1: Crawl & Extract
 
