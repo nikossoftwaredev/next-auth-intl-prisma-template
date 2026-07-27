@@ -1,233 +1,90 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository. Detailed rules live in `.claude/rules/` and load automatically when you work on matching files. `.claude/rules/corrections.md` and `.claude/rules/deployment-urls.md` load every session, and they are binding.
 
 ## Commands
 
-### Development
-
 ```bash
-pnpm dev        # Start development server on http://localhost:3000
-pnpm build      # Build for production
-pnpm start      # Start production server
-pnpm lint       # Run ESLint
-pnpm tsc --noEmit  # Check TypeScript errors
+pnpm dev            # Dev server on http://localhost:3000
+pnpm build          # Production build (runs prisma generate first)
+pnpm start          # Start production server
+pnpm lint           # ESLint
+pnpm tsc --noEmit   # TypeScript check
+npx shadcn@latest add <component>   # Add shadcn/ui components
 ```
 
-### Adding UI Components
+Exact dependency versions: read `package.json`, don't assume.
 
-```bash
-npx shadcn@latest add <component>  # Add new shadcn/ui components
-```
+## Rules index
+
+| Rule | Loads when you touch | Covers |
+| --- | --- | --- |
+| `corrections.md` | always | Non-negotiables, incident log |
+| `deployment-urls.md` | always | Canonical origin, `NEXT_PUBLIC_SITE_URL`, Vercel |
+| `code-style.md` | any `.ts`/`.tsx` | Arrow functions, if/else, params, imports |
+| `react-nextjs.md` | `app/`, `components/`, `hooks/`, `server_actions/` | Server/client boundary, useEffect, performance, dnd-kit |
+| `ui-design.md` | `components/`, `.tsx`, `.css` | shadcn/Lucide, shared primitives, Button, ScrollArea, styling |
+| `i18n.md` | `messages/`, `lib/i18n/`, `app/` | next-intl, message keys, locale params |
+| `dialog-system.md` | `components/`, `lib/stores/` | Central dialog store |
+| `file-uploads.md` | `lib/files/`, `server_actions/`, `app/api/` | Supabase/S3 uploads, sharp/WebP |
+| `landing-page.md` | `app/**/page.tsx`, `components/` | Navbar, mobile menu, business constants |
+
+Rule files use `paths:` frontmatter globs. Never write `app/[locale]/**` in one, because glob reads `[locale]` as a character class and the rule then silently never loads. Use `app/**` instead.
 
 ## Architecture
 
 ### Tech Stack
 
-- **Next.js 16.1.1** with App Router and React Server Components
-- **NextAuth.js 4.24** for authentication (Google OAuth)
-- **next-intl 4.7.0** for internationalization (en, el locales)
-- **Tailwind CSS 4** with CSS variables and modern color space
-- **shadcn/ui** components (New York style)
-- **TypeScript** with strict mode
-- **Zustand** for client-side state management
-- **sharp** for server-side image compression
+- **Next.js 16** (App Router, React Server Components), **React 19**, **TypeScript strict**
+- **NextAuth 4** (Google OAuth), **next-intl 4** (`en`, `el`, type-safe keys via `global.d.ts`)
+- **Tailwind CSS 4** (CSS variables, modern color space) plus **shadcn/ui** (New York style)
+- **Prisma 7** into Supabase PostgreSQL, **Zustand** (client state), **sharp** (image compression)
 
 ### Project Structure
 
-- `app/[locale]/` - Dynamic locale-based routing (page.tsx = landing page, admin/ = admin panel)
-- `app/api/auth/[...nextauth]/` - NextAuth API routes
-- `components/` - Custom components (landing page sections, shared components)
-- `components/ui/` - shadcn/ui components ONLY (do not put custom components here)
-- `components/auth/` - Authentication components
-- `components/admin/` - Admin panel components (sidebar, header)
-- `components/examples/` - Example/demo components (ThemeSwitcher, LanguageSwitcher)
-- `lib/i18n/` - Internationalization configuration
-- `lib/auth/` - NextAuth configuration
-- `lib/general/` - General utilities (`utils.ts`, `constants.ts` for business data)
-- `lib/stores/` - Zustand state stores (e.g., `dialog-store.ts`)
-- `lib/files/` - File upload utilities (S3/Supabase storage with sharp compression)
-- `messages/` - Translation files (en.json, el.json)
-- `public/images/` - Static images (logo, gallery, hero, services)
-- `proxy.ts` - Middleware for i18n routing (not middleware.ts)
-- `types/` - Shared TypeScript interfaces
+```
+app/[locale]/          # Locale routing: page.tsx = landing, admin/ = admin panel
+app/[locale]/globals.css  # All CSS variables and tokens
+app/api/auth/[...nextauth]/  # NextAuth routes
+app/robots.ts, sitemap.ts    # Absolute URLs, must use SITE_URL
+components/            # Custom components (ui/ = shadcn ONLY, auth/, admin/, examples/)
+lib/auth/ lib/i18n/ lib/db/ lib/files/ lib/stores/
+lib/general/           # utils.ts (cn), constants.ts (business data), site-url.ts (SITE_URL)
+messages/              # en.json, el.json
+proxy.ts               # i18n middleware (NOT middleware.ts)
+types/                 # Shared interfaces
+```
 
-### Key Patterns
+## Environment & Auth Setup
 
-#### Internationalization
+Required env vars (`.env.template` documents every one): `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DATABASE_URL`, `DIRECT_URL`, and `NEXT_PUBLIC_SITE_URL` (**left unset until the real domain exists**, see `.claude/rules/deployment-urls.md`).
 
-- All pages/layouts receive `params: Promise<{ locale: string }>`
-- Server components: Use `await getTranslations()` with `setRequestLocale(locale)`
-- Type-safe translations via `global.d.ts`
-- Navigation helpers in `lib/i18n/navigation.ts` (Link, redirect, useRouter)
+Google OAuth: create an OAuth 2.0 Client ID at [Google Cloud Console](https://console.developers.google.com/apis/credentials) with redirect URIs `http://localhost:3000/api/auth/callback/google` (dev) and `https://your-domain.com/api/auth/callback/google` (prod).
 
-#### Component Development
+## Definition of Done
 
-- Default to Server Components, use "use client" only when needed
-- Always await params in pages/layouts (Next.js 16 requirement)
-- Use `@/` path alias for imports
-- Utility function `cn()` in `@/lib/general/utils.ts` for merging Tailwind classes
+Work is complete only when all of these hold. Run them, don't assume:
 
-#### UI & Design Rules
+1. `pnpm tsc --noEmit` and `pnpm lint` show zero new errors, with output never filtered.
+2. The change was **driven, not just compiled**. UI: screenshot the running app and inspect it. Server or DB: hit the real route and read the data back.
+3. New or renamed i18n keys exist in BOTH `messages/en.json` and `messages/el.json`, and the dev server was restarted.
+4. Schema changes: migration run, `prisma generate` verified, dev server restarted.
+5. The abstracted lesson from any correction was written into `.claude/rules/`.
 
-- **Always use the frontend-design plugin** when working on any design or UI task
-- **Always use shadcn/ui components** — if a component exists in the shadcn/ui online library, download it (`npx shadcn@latest add <component>`) and use it. Never build custom versions of components that shadcn already provides. Search the web for the correct install command and usage patterns before implementing. Do not guess component APIs; look them up.
-- **Always use Lucide icons** (`lucide-react`) — they are the icon set used by shadcn/ui. Search for the right icon name on the web when needed.
-- **Icons in form inputs** — All input fields and textareas should have a Lucide icon at the start (inside the input or as a label prefix). Use `inline size-3.5` on the icon. Pattern: `<FormLabel><User className="inline size-3.5" /> {t("name")}</FormLabel>`
-- **`cursor-pointer` on all interactive elements** — Every clickable element (buttons, dropdowns, selects, links, toggles, cards with onClick) must have `cursor-pointer`. Add it to shadcn component overrides if missing.
-- **`components/ui/` is reserved for shadcn/ui components only** — custom components go in `components/`
-- **`CircleIcon`** (`components/CircleIcon.tsx`) — Use for icon display in feature cards, services, about sections, or any non-social context. Renders an icon inside a colored circular background.
-- **`SocialIcon`** (`components/social-icon.tsx`) — Use for ALL social media links (footer, contact, navbar). Provides platform-specific colors (Instagram pink, YouTube red, etc.) and hover effects. Never build custom social link buttons — always use this component.
-- **`ExpandMap`** (`components/expand-map.tsx`) — Use for ALL map displays (contact sections, footer, location cards). Takes `address`, `mapsUrl`, and `coordinates` props.
-- **Business constants** — All hardcoded business data (phone, email, URLs, social links) lives in `lib/general/constants.ts`. Never scatter magic strings across components.
+## Workflow
 
-#### Landing Page Patterns
-
-- **Server/client split** — Sections needing i18n + interactivity use a server wrapper (`getTranslations`) rendering a client child (`useTranslations` + `useState`). Example: `gallery-section.tsx` → `gallery-grid.tsx`.
-- **Navbar** — Fixed, transparent over hero, solid on scroll. Toggle `border-transparent`/`border-border` (not `border-b` on/off) to avoid transition flicker.
-- **Mobile menu** — Slide-in panel from right with backdrop blur overlay and body scroll lock. Never a simple dropdown.
-- **Smooth scrolling** — `scroll-behavior: smooth` on html in globals.css for all anchor links.
-- **Real photos for services** — Use actual photos with gradient overlays instead of generic Lucide icons for service/product cards.
-
-#### Button Component
-
-- `Button` has built-in `loading` and `icon` props:
-  - `loading={true}` → shows `<Loader2>` spinner, auto-disables button
-  - `icon={<Plus />}` → renders icon before children, hidden when loading
-  - `variant="brand"` → uses `--brand-primary` CSS variable for tenant-specific branding
-- Pattern: `<Button loading={isPending} icon={<Save className="size-4" />}>Save</Button>`
-
-#### Radix Scrollbar Fix
-
-- Radix dialogs/sheets inject scroll-locking styles that cause page layout shift (scrollbar disappears, content jumps).
-- **Already fixed in `globals.css`** — forces `overflow-y: scroll !important` on html and zeroes out all compensating margins/padding on `body[data-scroll-locked]`.
-- If you add a new CSS file or reset globals, ensure this fix is preserved.
-
-#### Reusable Components
-
-Standard extracted components in `components/` (NOT `components/ui/`):
-
-- `EmptyState` — icon + title + optional description (for empty tables, lists, etc.)
-- `PageHeader` — title + optional description + children slot for action buttons
-- `UserAvatar` — image with initials fallback, size variants (sm/md/lg)
-- `PaginationControls` — prev/next with page count, auto-hides when single page
-
-#### Dialog System
-
-- **Zustand store** at `lib/stores/dialog-store.ts` manages global dialog state imperatively
-- Open dialogs with `useDialogStore().openDialog(key, data?, onSuccess?)`
-- Register new dialogs in `components/dialog-provider.tsx`
-- Each dialog checks `currentDialog === MY_KEY` to determine visibility
-- Use individual Zustand selectors (not full store destructuring) to avoid unnecessary re-renders
-- `components/confirm-dialog.tsx` is the reusable confirm/delete dialog (key: `CONFIRM_DIALOG`)
-
-#### File Uploads
-
-- `lib/files/upload.ts` handles S3-compatible uploads to Supabase storage
-- All images are auto-compressed and converted to WebP via `sharp` before upload
-- `uploadFile(buffer, fileName)` returns the public URL (extension changed to `.webp`)
-- `deleteFile(fileUrl)` removes a file by its public URL
-
-#### Styling
-
-- CSS variables defined in `app/globals.css` (includes custom brand colors like `--forest`, `--leaf`, `--cream`)
-- Dark mode via `next-themes` with class strategy
-- Custom Tailwind variant: `@custom-variant dark (&:is(.dark *))`
-- Always use semantic color naming (e.g., `text-foreground`, `bg-background`)
-- Use Tailwind 4 canonical classes (`z-100` not `z-[100]`, `bg-linear-to-t` not `bg-gradient-to-t`)
-- All transitions should use `duration-300` — no jarring state changes
-
-## Authentication Setup
-
-### NextAuth Configuration
-
-- **Provider**: Google OAuth configured in `lib/auth/auth.ts`
-- **Session Management**: SessionProvider wraps the app in `components/providers.tsx`
-- **Environment Variables Required**:
-  - `NEXTAUTH_SECRET`: Secret key for JWT encryption
-  - `NEXTAUTH_URL`: Application URL (http://localhost:3000 for development)
-  - `GOOGLE_CLIENT_ID`: From Google Cloud Console
-  - `GOOGLE_CLIENT_SECRET`: From Google Cloud Console
-
-### Google OAuth Setup
-
-1. Go to [Google Cloud Console](https://console.developers.google.com/apis/credentials)
-2. Create a new OAuth 2.0 Client ID
-3. Set Authorized redirect URIs:
-   - Development: `http://localhost:3000/api/auth/callback/google`
-   - Production: `https://your-domain.com/api/auth/callback/google`
-4. Copy Client ID and Client Secret to `.env.local`
-
-## Important Notes
-
-- **PNPM Required**: This project uses PNPM workspaces
-- **Locale Validation**: Layout validates locale and returns 404 for invalid locales
-- **Static Generation**: Uses `generateStaticParams()` for all locale variants
-- **Prisma Setup**: Connected to Supabase PostgreSQL database with User and Todo models
-- **Package Versions**: When adding a new package, always install the latest stable version. Never install outdated or pinned versions without explicit reason.
-
-## Development Guidelines
-
-All coding rules, style preferences, and best practices are in `tasks/lessons.md`. Review at session start.
-
-## Workflow Orchestration
-
-### 1. Plan Mode Default
-
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately - don't keep pushing
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
-
-### 2. Subagent Strategy
-
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One task per subagent for focused execution
-
-### 3. Self-Improvement Loop
-
-- After ANY correction from the user: update `tasks/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
-
-### 4. Verification Before Done
-
-- Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-
-### 5. Demand Elegance (Balanced)
-
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes - don't over-engineer
-- Challenge your own work before presenting it
-
-### 6. Autonomous Bug Fixing
-
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests - then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
-
-## Task Management
-
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `tasks/todo.md`
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+- **Plan first.** Enter plan mode for anything non-trivial (3+ steps or an architectural decision). Write the plan to `tasks/todo.md` with checkable items, confirm it, then track progress there and add a review section at the end. If something goes sideways, stop and re-plan instead of pushing.
+- **Use subagents** for research, exploration and parallel analysis to keep the main context clean, one task per subagent.
+- **Self-improvement loop.** After ANY correction from the user, update `.claude/rules/corrections.md` (or the relevant scoped rule) with the pattern that prevents a repeat.
+- **Verify before "done".** Never mark a task complete without proving it works. Would a staff engineer approve this?
+- **Demand elegance (balanced).** For non-trivial changes, ask whether there is a cleaner way; if a fix feels hacky, redo it properly. Skip this for simple, obvious fixes.
+- **Autonomous bug fixing.** Given a bug report, a log, or a failing check: just fix it, with no hand-holding round-trips.
 
 ## Core Principles
 
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+- **Simplicity first.** Every change as simple as it can be, touching minimal code.
+- **No laziness.** Root causes, not temporary patches. Senior-engineer standards.
+- **Minimal impact.** Only touch what's necessary, and don't introduce collateral bugs.
 
 ## Writing Style
 
@@ -237,23 +94,13 @@ All coding rules, style preferences, and best practices are in `tasks/lessons.md
 
 ## Screenshot Workflow
 
-- Puppeteer is installed as a devDependency with bundled Chromium.
-- **Always screenshot from localhost** — ensure `pnpm dev` is running first.
-- Take a screenshot: `node screenshot.mjs http://localhost:3000`
-- Add a path for specific pages: `node screenshot.mjs http://localhost:3000/en/admin`
-- Screenshots save to `screenshots/screenshot-N.png` (auto-incremented, never overwritten).
-- Optional label: `node screenshot.mjs http://localhost:3000 label` → `screenshot-N-label.png`
-- After screenshotting, read the PNG with the Read tool to visually inspect the UI.
-- When comparing against a reference, be specific about differences: spacing, font sizes, colors (hex), alignment, border-radius, shadows.
+Puppeteer is a devDependency with bundled Chromium. Always screenshot from localhost with `pnpm dev` running.
 
-### Auto-Verification Rule
+```bash
+node screenshot.mjs http://localhost:3000                 # -> screenshots/screenshot-N.png
+node screenshot.mjs http://localhost:3000/en/admin admin  # -> screenshot-N-admin.png
+```
 
-**After each meaningful UI change (a section, component, or layout adjustment), you MUST:**
+Screenshots auto-increment and are never overwritten. After capturing, read the PNG with the Read tool and inspect it. When comparing against a reference, be specific about differences: spacing, font sizes, colors (hex), alignment, border-radius, shadows.
 
-1. Run `node screenshot.mjs http://localhost:3000/<relevant-path> <label>` to capture the result
-2. Read the PNG with the Read tool and visually inspect it
-3. Check that the change matches what was requested — look for layout issues, broken styling, misalignment, missing elements
-4. If something looks wrong, fix it and screenshot again — repeat until it looks correct
-5. Only then move on to the next change
-
-**Do NOT batch all changes and screenshot once at the end.** Verify incrementally after each section so issues are caught early and fixed in isolation.
+**Auto-verification:** after each meaningful UI change (a section, component or layout adjustment), screenshot, inspect, fix, and re-screenshot until correct, then move on. Do NOT batch every change and screenshot once at the end.

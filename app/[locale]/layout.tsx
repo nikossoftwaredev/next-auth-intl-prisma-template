@@ -7,6 +7,7 @@ import { hasLocale } from "next-intl";
 import { getMessages,setRequestLocale } from "next-intl/server";
 
 import { Providers } from "@/components/providers";
+import { SITE_URL } from "@/lib/general/site-url";
 import { routing } from "@/lib/i18n/routing";
 import { BaseLayoutProps } from "@/types/page-props";
 
@@ -17,6 +18,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "App",
   description: "",
 };
