@@ -20,4 +20,5 @@ Rules learned from actual corrections. These are binding.
 
 - **A wrong canonical origin is permanent damage.** Never paste a `*.vercel.app` URL as the site base to unblock a build. Full rule: `.claude/rules/deployment-urls.md`.
 - **`tsc` + `lint` passing does not mean it works.** next-intl message caching, Prisma client staleness, and env-var inlining all survive a green typecheck. Drive the feature in the running app.
+- **Read the port `pnpm dev` actually bound.** If 3000 is taken, Next silently moves to 3001, and screenshots of `localhost:3000` capture a different app. Check the `Local:` line before verifying anything.
 - **Restart the dev server** after changing `messages/*.json`, the Prisma schema, or any `NEXT_PUBLIC_*` variable. A running server holds stale caches and will lie to you.
