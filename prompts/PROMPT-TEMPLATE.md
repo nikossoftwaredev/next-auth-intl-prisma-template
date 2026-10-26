@@ -69,7 +69,7 @@ For any images I DON'T have (services, products, etc.), download real photos fro
 
 10. **Newsletter** — Email signup with branded background, input + button (icon-only on mobile), privacy note.
 
-11. **Footer** — Brand, quick links, contact info, social icons (use `SocialIcon` from `@/components/social-icon.tsx`), map, copyright, "Made by Hexaigon" credit.
+11. **Footer** — Brand, quick links, contact info, social icons (use `SocialIcon` from `@/components/social-icon.tsx`), map, copyright, "Made by Hexaigon" credit linking to https://hexaigon.gr (never .com).
 
 Delete any sections you don't need. Reorder as needed.
 

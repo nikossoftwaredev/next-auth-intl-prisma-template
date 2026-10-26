@@ -9,6 +9,7 @@ Rules learned from actual corrections. These are binding.
 ## Always
 
 - **pnpm only**, never npm or yarn. This project uses PNPM workspaces.
+- **The Hexaigon credit links to https://hexaigon.gr, never hexaigon.com.** Every footer carries "Made by Hexaigon" with the Lucide `Hexagon` icon in the primary colour, opening in a new tab with `rel="noopener noreferrer"` (`components/footer.tsx`, `prompts/definition-of-done.md`). A project that builds its own footer copies the link from the definition of done, not from an older footer.
 - **Latest stable package versions.** When adding a dependency, install the current stable release. Never pin an outdated version without an explicit, stated reason.
 - **Error-checking protocol.** After finishing work on any file: (1) `pnpm tsc --noEmit`, (2) `pnpm lint`, (3) fix ALL errors before moving on. Never grep-filter the output, because pre-existing errors must stay visible so new ones aren't masked.
 - **Screenshot verification.** After each meaningful UI change, screenshot and visually inspect it. Do not batch every change and check once at the end.
