@@ -9,7 +9,7 @@ paths:
 
 ## Component sourcing
 
-- **Always use the frontend-design plugin** for any design or UI task.
+- **Use the Impeccable skills** (`impeccable`, `polish`, `audit`, `critique` and the rest in `.claude/skills/`) for any design or UI task, and `emil-design-eng` for motion and interaction decisions. The `frontend-design` plugin is disabled on purpose (see `.claude/rules/ai-tooling.md`).
 - **Always use shadcn/ui components.** If the component exists in the shadcn/ui library, install it (`npx shadcn@latest add <component>`) and use its official API. Never hand-build a Button, Dialog, Select, Input, Table, and so on. Look the API up (web, context7) instead of guessing.
 - **`components/ui/` is shadcn/ui ONLY.** Custom components live in `components/`.
 - **Always use Lucide icons** (`lucide-react`), the icon set shadcn/ui ships with. Search for the correct icon name rather than guessing.

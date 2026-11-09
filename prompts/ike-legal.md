@@ -16,7 +16,7 @@ Add ΙΚΕ (Greek Private Company) legal-transparency compliance to this site, f
 
 ### 1. New route — Company Info
 
-Create `app/[locale]/company-info/page.tsx` (server component). Render **all** legally required fields below, grouped in `Card`s from `components/ui/`. Match the current design system (shadcn/ui + Tailwind + dark/light theme). Fully responsive.
+Create `app/[locale]/(site)/company-info/page.tsx` (server component). Render **all** legally required fields below, grouped in `Card`s from `components/ui/`. Match the current design system (shadcn/ui + Tailwind + dark/light theme). Fully responsive.
 
 **Required fields (Άρθρο 47 §1 + §2 + 98 §2):**
 
@@ -84,7 +84,7 @@ export const companyInfo = {
 
 ## Definition of Done
 
-- [ ] `app/[locale]/company-info/page.tsx` exists, renders all required fields, uses shadcn/ui `Card` + `Table`
+- [ ] `app/[locale]/(site)/company-info/page.tsx` exists, renders all required fields, uses shadcn/ui `Card` + `Table`
 - [ ] Page is a server component using `getTranslations`; **zero** hardcoded UI strings
 - [ ] `companyInfo` namespace added to `en.json`, `el.json`, `es.json` (labels translated, values identical)
 - [ ] Company data lives in one typed source (`lib/company-info.ts`), read by both page and footer

@@ -46,3 +46,6 @@ next-env.d.ts
 
 # screenshots
 /screenshots
+
+# playwright-cli session output (/site-qa)
+/.playwright-cli

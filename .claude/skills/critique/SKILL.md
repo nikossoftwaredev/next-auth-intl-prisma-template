@@ -1,9 +1,13 @@
 ---
 name: critique
-description: Evaluate design from a UX perspective, assessing visual hierarchy, information architecture, emotional resonance, cognitive load, and overall quality with quantitative scoring, persona-based testing, automated anti-pattern detection, and actionable feedback. Use when the user asks to review, critique, evaluate, or give feedback on a design or component.
+description: Evaluate design from a UX perspective, assessing visual hierarchy, information architecture, emotional resonance, cognitive load, and overall quality with quantitative scoring, persona-based testing, and actionable feedback. Use when the user asks to review, critique, evaluate, or give feedback on a design or component.
 user-invocable: true
 argument-hint: "[area (feature, page, component...)]"
 ---
+
+<!-- Local change (2026-11-09): the automated detector (Assessment B) was removed.
+     It downloaded and ran the latest Impeccable 4.x package, which failed the
+     SkillSpector gate. See .claude/skills/SOURCES.md. -->
 
 ## STEPS
 
@@ -11,22 +15,10 @@ argument-hint: "[area (feature, page, component...)]"
 
 Invoke /impeccable, which contains design principles, anti-patterns, and the **Context Gathering Protocol**. Follow the protocol before proceeding. If no design context exists yet, you MUST run /impeccable teach first. Additionally gather: what the interface is trying to accomplish.
 
-### Step 2: Gather Assessments
+### Step 2: Design Review
 
-Launch two independent assessments. **Neither must see the other's output** to avoid bias.
+Read the relevant source files (HTML, CSS, JS/TS) and, if browser automation is available, visually inspect the live page. Do NOT output findings to the user yet.
 
-You SHOULD delegate each assessment to a separate sub-agent for independence. Use your environment's agent spawning mechanism (e.g., Claude Code's `Agent` tool, or Codex's subagent spawning). Sub-agents should return their findings as structured text. Do NOT output findings to the user yet.
-
-If sub-agents are not available in the current environment, complete each assessment sequentially, writing findings to internal notes before proceeding.
-
-**Tab isolation**: When browser automation is available, each assessment MUST create its own new tab. Never reuse an existing tab, even if one is already open at the correct URL. This prevents the two assessments from interfering with each other's page state.
-
-#### Assessment A: LLM Design Review
-
-Read the relevant source files (HTML, CSS, JS/TS) and, if browser automation is available, visually inspect the live page. **Create a new tab** for this; do not reuse existing tabs. After navigation, label the tab by setting the document title:
-```javascript
-document.title = '[LLM] ' + document.title;
-```
 Think like a design director. Evaluate:
 
 **AI Slop Detection (CRITICAL)**: Does this look like every other AI-generated interface? Review against ALL **DON'T** guidelines in the impeccable skill. Check for AI color palette, gradient text, dark glows, glassmorphism, hero metric layouts, identical card grids, generic fonts, and all other tells. **The test**: If someone said "AI made this," would you believe them immediately?
@@ -46,56 +38,9 @@ Think like a design director. Evaluate:
 **Nielsen's Heuristics** (consult [heuristics-scoring](reference/heuristics-scoring.md)):
 Score each of the 10 heuristics 0-4. This scoring will be presented in the report.
 
-Return structured findings covering: AI slop verdict, heuristic scores, cognitive load assessment, what's working (2-3 items), priority issues (3-5 with what/why/fix), minor observations, and provocative questions.
+Collect structured findings covering: AI slop verdict, heuristic scores, cognitive load assessment, what's working (2-3 items), priority issues (3-5 with what/why/fix), minor observations, and provocative questions.
 
-#### Assessment B: Automated Detection
-
-Run the bundled deterministic detector, which flags 25 specific patterns (AI slop tells + general design quality).
-
-**CLI scan**:
-```bash
-npx impeccable --json [--fast] [target]
-```
-
-- Pass HTML/JSX/TSX/Vue/Svelte files or directories as `[target]` (anything with markup). Do not pass CSS-only files.
-- For URLs, skip the CLI scan (it requires Puppeteer). Use browser visualization instead.
-- For large directories (200+ scannable files), use `--fast` (regex-only, skips jsdom)
-- For 500+ files, narrow scope or ask the user
-- Exit code 0 = clean, 2 = findings
-
-**Browser visualization** (when browser automation tools are available AND the target is a viewable page):
-
-The overlay is a **visual aid for the user**. It highlights issues directly in their browser. Do NOT scroll through the page to screenshot overlays. Instead, read the console output to get the results programmatically.
-
-1. **Start the live detection server**:
-   ```bash
-   npx impeccable live &
-   ```
-   Note the port printed to stdout (auto-assigned). Use `--port=PORT` to fix it.
-2. **Create a new tab** and navigate to the page (use dev server URL for local files, or direct URL). Do not reuse existing tabs.
-3. **Label the tab** via `javascript_tool` so the user can distinguish it:
-   ```javascript
-   document.title = '[Human] ' + document.title;
-   ```
-4. **Scroll to top** to ensure the page is scrolled to the very top before injection
-5. **Inject** via `javascript_tool` (replace PORT with the port from step 1):
-   ```javascript
-   const s = document.createElement('script'); s.src = 'http://localhost:PORT/detect.js'; document.head.appendChild(s);
-   ```
-6. Wait 2-3 seconds for the detector to render overlays
-7. **Read results from console** using `read_console_messages` with pattern `impeccable`. The detector logs all findings with the `[impeccable]` prefix. Do NOT scroll through the page to take screenshots of the overlays.
-8. **Cleanup**: Stop the live server when done:
-   ```bash
-   npx impeccable live stop
-   ```
-
-For multi-view targets, inject on 3-5 representative pages. If injection fails, continue with CLI results only.
-
-Return: CLI findings (JSON), browser console findings (if applicable), and any false positives noted.
-
-### Step 3: Generate Combined Critique Report
-
-Synthesize both assessments into a single report. Do NOT simply concatenate. Weave the findings together, noting where the LLM review and detector agree, where the detector caught issues the LLM missed, and where detector findings are false positives.
+### Step 3: Generate Critique Report
 
 Structure your feedback as a design director would:
 
@@ -124,11 +69,7 @@ Be honest with scores. A 4 means genuinely excellent. Most real interfaces score
 
 **Start here.** Does this look AI-generated?
 
-**LLM assessment**: Your own evaluation of AI slop tells. Cover overall aesthetic feel, layout sameness, generic composition, missed opportunities for personality.
-
-**Deterministic scan**: Summarize what the automated detector found, with counts and file locations. Note any additional issues the detector caught that you missed, and flag any false positives.
-
-**Visual overlays** (if browser was used): Tell the user that overlays are now visible in the **[Human]** tab in their browser, highlighting the detected issues. Summarize what the console output reported.
+Your own evaluation of AI slop tells. Cover overall aesthetic feel, layout sameness, generic composition, missed opportunities for personality.
 
 #### Overall Impression
 A brief gut reaction: what works, what doesn't, and the single biggest opportunity.

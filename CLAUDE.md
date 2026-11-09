@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working in this repository. Detailed rules live in `.claude/rules/` and load automatically when you work on matching files. `.claude/rules/corrections.md` and `.claude/rules/deployment-urls.md` load every session, and they are binding.
+Guidance for Claude Code when working in this repository. Detailed rules live in `.claude/rules/` and load automatically when you work on matching files. `.claude/rules/corrections.md`, `.claude/rules/deployment-urls.md` and `.claude/rules/ai-tooling.md` load every session, and they are binding.
 
 ## Commands
 
@@ -11,7 +11,10 @@ pnpm start          # Start production server
 pnpm lint           # ESLint
 pnpm tsc --noEmit   # TypeScript check
 npx shadcn@latest add <component>   # Add shadcn/ui components
+pnpm exec shadcn add @react-bits/<Name>-TS-TW   # Add a React Bits effect
 ```
+
+Before delivering a site: `/audit`, then `/site-qa`, until zero Blockers remain.
 
 Exact dependency versions: read `package.json`, don't assume.
 
@@ -21,6 +24,8 @@ Exact dependency versions: read `package.json`, don't assume.
 | --- | --- | --- |
 | `corrections.md` | always | Non-negotiables, incident log |
 | `deployment-urls.md` | always | Canonical origin, `NEXT_PUBLIC_SITE_URL`, Vercel |
+| `ai-tooling.md` | always | SkillSpector gate, what is installed and what stays out, delivery QA |
+| `animation.md` | `components/`, `lib/gsap.ts`, `app/` | GSAP via `lib/gsap.ts`, Lenis, reduced motion, React Bits |
 | `code-style.md` | any `.ts`/`.tsx` | Arrow functions, if/else, params, imports |
 | `react-nextjs.md` | `app/`, `components/`, `hooks/`, `server_actions/` | Server/client boundary, useEffect, performance, dnd-kit |
 | `ui-design.md` | `components/`, `.tsx`, `.css` | shadcn/Lucide, shared primitives, Button, ScrollArea, styling |
@@ -39,17 +44,20 @@ Rule files use `paths:` frontmatter globs. Never write `app/[locale]/**` in one,
 - **NextAuth 4** (Google OAuth), **next-intl 4** (`en`, `el`, type-safe keys via `global.d.ts`)
 - **Tailwind CSS 4** (CSS variables, modern color space) plus **shadcn/ui** (New York style)
 - **Prisma 7** into Supabase PostgreSQL, **Zustand** (client state), **sharp** (image compression)
+- **GSAP** (plugins registered in `lib/gsap.ts`), **Lenis** smooth scroll on the GSAP ticker (public site only), **React Bits** effects via the shadcn registry
 
 ### Project Structure
 
 ```
-app/[locale]/          # Locale routing: page.tsx = landing, admin/ = admin panel
+app/[locale]/(site)/   # Public pages: page.tsx = landing, layout.tsx mounts Lenis
+app/[locale]/admin/    # Admin panel (native scroll, outside the Lenis group)
 app/[locale]/globals.css  # All CSS variables and tokens
 app/api/auth/[...nextauth]/  # NextAuth routes
 app/robots.ts, sitemap.ts    # Absolute URLs, must use SITE_URL
 components/            # Custom components (ui/ = shadcn ONLY, auth/, admin/, examples/)
 lib/auth/ lib/i18n/ lib/db/ lib/files/ lib/stores/
 lib/general/           # utils.ts (cn), constants.ts (business data), site-url.ts (SITE_URL)
+lib/gsap.ts            # The one place GSAP plugins are registered
 messages/              # en.json, el.json
 proxy.ts               # i18n middleware (NOT middleware.ts)
 types/                 # Shared interfaces
